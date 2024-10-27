@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en" class="ios ios-translucent-bars ios-translucent-modals device-pixel-ratio-2 device-ios ios dark">
+<head>
+  <meta charset="utf-8">
+	<link rel="apple-touch-icon" href="favicon.ico">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, viewport-fit=cover">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <title>TSChecker</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/framework7@8.3.3/framework7-bundle.min.css" integrity="sha256-cK8qB/ROffwYFEJ4KDE1DKIQqES7GT1/VmrZr+KWfqw=" crossorigin="anonymous">
+</head>
+<body>
+  <div id="app">
+    <div class="view view-main">
+      <div data-name="home" class="page">
+        <div class="navbar navbar-large navbar-transparent">
+          <div class="navbar-bg"></div>
+          <div class="navbar-inner sliding">
+            <div class="title">TSChecker</div>
+            <div class="title-large">
+              <div class="title-large-text">TSChecker</div>
+            </div>
+          </div>
+        </div>
+        <div class="page-content">
+          <div class="block-title">Version and architecture</div>
+          <div class="block block-strong inset">
+            <div class="segmented segmented-strong">
+              <a id="betaButton" class="button" onclick="setVersionType('beta')">Beta</a>
+              <a id="releaseButton" class="button button-active" onclick="setVersionType('release')">Release</a>
+              <span class="segmented-highlight"></span>
+            </div>
+            <br>
+            <div class="segmented segmented-strong">
+              <a id="arm64Button" class="button button-active" onclick="setArchitecture('arm64')">arm64</a>
+              <a id="arm64eButton" class="button" onclick="setArchitecture('arm64e')">arm64e</a>
+              <span class="segmented-highlight"></span>
+            </div>
+          </div>
+          <div class="block-title">iOS Version</div>
+          <div class="list list-strong-ios list-dividers-ios inset-ios">
+            <ul>
+              <li class="item-content item-input">
+                <div class="item-inner">
+                  <div class="item-input-wrap">
+                    <input type="number" id="iOSVersion" placeholder="Enter iOS Version">
+                    <span class="input-clear-button"></span>
+                  </div>
+                </div>
+              </li>
+              <li>
+                <a onclick="checkSupport()" type="button" class="list-button">Check support</a>
+              </li>
+            </ul>
+          </div>
+          <div class="block-title">Support information</div>
+          <div id="supportInfo" class="block block-strong inset"><p>iOS Version: Unknown<p style="color:red;">TrollStore Support: Unknown</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/framework7@8.3.3/framework7-bundle.min.js" integrity="sha256-1r9ib4mhGW3+qxoxb4nz2z4GkQqNG/CUa4Emli2pL2I=" crossorigin="anonymous"></script>
+  <script src="app.js"></script>
+</body>
+</html>
+<style>:root{--f7-ios-primary: #3E84F7;--f7-ios-primary-shade: #3E84F7;--f7-ios-primary-tint: #3E84F7;}
+.ios{--f7-theme-color-rgb: var(--f7-ios-primary-rgb);--f7-block-inset-border-radius: 15px;--f7-list-inset-border-radius: 15px;}.button-fill{border-radius:10px;margin-bottom:7px;}.not-supported{font-size:auto;color:red;}.supported{font-size:auto;color:green;}</style>
