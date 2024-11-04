@@ -54,148 +54,163 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/framework7@8.3.3/framework7-bundle.min.js" integrity="sha256-1r9ib4mhGW3+qxoxb4nz2z4GkQqNG/CUa4Emli2pL2I=" crossorigin="anonymous"></script><script src="app.js"></script>
-  <script>
+  <script>     
     var selectedVersionType = 'release';
-    var selectedDevice = null;
-    var selectedArchitecture = 'arm64';
-    var iosVersion = getIOSVersion();
+var selectedDevice = null;
+var selectedArchitecture = 'arm64';
+var iosVersion = getIOSVersion();
 
-    const deviceList = [
-      { model: 'Choose Device', architecture: '' }, 
-      { model: 'iPhone 6s', architecture: 'arm64' },
-      { model: 'iPhone 6s Plus', architecture: 'arm64' },
-      { model: 'iPhone 7', architecture: 'arm64' },
-      { model: 'iPhone 7 Plus', architecture: 'arm64' },
-      { model: 'iPhone 8', architecture: 'arm64' },
-      { model: 'iPhone 8 Plus', architecture: 'arm64' },
-      { model: 'iPhone X', architecture: 'arm64e' },
-      { model: 'iPhone XR', architecture: 'arm64e' },
-      { model: 'iPhone XS', architecture: 'arm64e' },
-      { model: 'iPhone XS Max', architecture: 'arm64e' },
-      { model: 'iPhone 11', architecture: 'arm64e' },
-      { model: 'iPhone 11 Pro', architecture: 'arm64e' },
-      { model: 'iPhone 11 Pro Max', architecture: 'arm64e' },
-      { model: 'iPhone 12 mini', architecture: 'arm64e' },
-      { model: 'iPhone 12', architecture: 'arm64e' },
-      { model: 'iPhone 12 Pro', architecture: 'arm64e' },
-      { model: 'iPhone 12 Pro Max', architecture: 'arm64e' },
-      { model: 'iPhone 13 mini', architecture: 'arm64e' },
-      { model: 'iPhone 13', architecture: 'arm64e' },
-      { model: 'iPhone 13 Pro', architecture: 'arm64e' },
-      { model: 'iPhone 13 Pro Max', architecture: 'arm64e' },
-      { model: 'iPhone 14', architecture: 'arm64e' },
-      { model: 'iPhone 14 Plus', architecture: 'arm64e' },
-      { model: 'iPhone 14 Pro', architecture: 'arm64e' },
-      { model: 'iPhone 14 Pro Max', architecture: 'arm64e' }
-    ];
+const deviceList = [
+  { model: 'Choose Device', architecture: '' }, 
+  { model: 'iPhone 6s', architecture: 'arm64' },
+  { model: 'iPhone 6s Plus', architecture: 'arm64' },
+  { model: 'iPhone 7', architecture: 'arm64' },
+  { model: 'iPhone 7 Plus', architecture: 'arm64' },
+  { model: 'iPhone 8', architecture: 'arm64' },
+  { model: 'iPhone 8 Plus', architecture: 'arm64' },
+  { model: 'iPhone X', architecture: 'arm64e' },
+  { model: 'iPhone XR', architecture: 'arm64e' },
+  { model: 'iPhone XS', architecture: 'arm64e' },
+  { model: 'iPhone XS Max', architecture: 'arm64e' },
+  { model: 'iPhone 11', architecture: 'arm64e' },
+  { model: 'iPhone 11 Pro', architecture: 'arm64e' },
+  { model: 'iPhone 11 Pro Max', architecture: 'arm64e' },
+  { model: 'iPhone 12 mini', architecture: 'arm64e' },
+  { model: 'iPhone 12', architecture: 'arm64e' },
+  { model: 'iPhone 12 Pro', architecture: 'arm64e' },
+  { model: 'iPhone 12 Pro Max', architecture: 'arm64e' },
+  { model: 'iPhone 13 mini', architecture: 'arm64e' },
+  { model: 'iPhone 13', architecture: 'arm64e' },
+  { model: 'iPhone 13 Pro', architecture: 'arm64e' },
+  { model: 'iPhone 13 Pro Max', architecture: 'arm64e' },
+  { model: 'iPhone 14', architecture: 'arm64e' },
+  { model: 'iPhone 14 Plus', architecture: 'arm64e' },
+  { model: 'iPhone 14 Pro', architecture: 'arm64e' },
+  { model: 'iPhone 14 Pro Max', architecture: 'arm64e' }
+];
 
-    var pickerDevice = null;
+var pickerDevice = null;
 
-    function getIOSVersion() {
-        const userAgent = navigator.userAgent;
-        const match = userAgent.match(/OS (\d+_\d+)/);
-        return match ? match[1].replace('_', '.') : null;
+function getIOSVersion() {
+  const userAgent = navigator.userAgent;
+  const match = userAgent.match(/OS (\d+_\d+)/);
+  return match ? match[1].replace('_', '.') : null;
+}
+
+function getTrollStoreSupport(version, architecture, versionType) {
+  if (!version) return 'Unsupported';
+
+  const architectureMap = {
+    'arm64': 'arm64 (A8)',
+    'arm64e': 'arm64e (A12-A17/M1-M2)',
+  };
+
+  const mappedArchitecture = architectureMap[architecture];
+  if (!mappedArchitecture) return 'Unsupported';
+
+  const compatibilityData = {
+    beta: {
+      'arm64 (A8)': [
+        { from: '14.0 beta 2', to: '14.8.1', tool: 'TrollInstallerX' }
+      ],
+      'arm64 (A9-A11)': [
+        { from: '14.0 beta 2', to: '17.0 beta 4', tool: 'TrollInstallerX' },
+        { from: '17.0 beta 5', to: '17.0', tool: 'TrollRestore' }
+      ],
+      'arm64e (A12-A17/M1-M2)': [
+        { from: '14.0 beta 2', to: '17.0 beta 4', tool: 'TrollHelperOTA' },
+        { from: '17.0 beta 5', to: '17.0', tool: 'TrollRestore' }
+      ]
+    },
+    release: {
+      'arm64 (A8)': [
+        { from: '14.8', to: '14.8.1', tool: 'TrollInstallerX' }
+      ],
+      'arm64 (A9-A11)': [
+        { from: '14.8', to: '17.0', tool: 'TrollInstallerX' },
+        { from: '17.0', to: '17.0', tool: 'TrollRestore' }
+      ],
+      'arm64e (A12-A17/M1-M2)': [
+        { from: '14.8', to: '17.0', tool: 'TrollHelperOTA' },
+        { from: '17.0', to: '17.0', tool: 'TrollRestore' }
+      ]
     }
+  };
 
-    function getTrollStoreSupport(version, architecture, versionType) {
-        if (!version) return 'Unsupported';
+  const architectureData = compatibilityData[versionType][mappedArchitecture];
+  if (!architectureData) return 'Unsupported';
 
-        const compatibilityData = {
-            beta: {
-                'arm64 (A8)': [
-                    { from: '14.0 beta 2', to: '14.8.1', tool: 'TrollInstallerX' }
-                ],
-                'arm64 (A9-A11)': [
-                    { from: '14.0 beta 2', to: '17.0 beta 4', tool: 'TrollInstallerX' },
-                    { from: '17.0 beta 5', to: '17.0', tool: 'TrollRestore' }
-                ],
-                'arm64e (A12-A17/M1-M2)': [
-                    { from: '14.0 beta 2', to: '17.0 beta 4', tool: 'TrollHelperOTA' },
-                    { from: '17.0 beta 5', to: '17.0', tool: 'TrollRestore' }
-                ]
-            },
-            release: {
-                'arm64 (A8)': [
-                    { from: '14.8', to: '14.8.1', tool: 'TrollInstallerX' }
-                ],
-                'arm64 (A9-A11)': [
-                    { from: '14.8', to: '17.0', tool: 'TrollInstallerX' },
-                    { from: '17.0', to: '17.0', tool: 'TrollRestore' }
-                ],
-                'arm64e (A12-A17/M1-M2)': [
-                    { from: '14.8', to: '17.0', tool: 'TrollHelperOTA' },
-                    { from: '17.0', to: '17.0', tool: 'TrollRestore' }
-                ]
-            }
-        };
-
-        const architectureData = compatibilityData[versionType][architecture];
-        if (!architectureData) return 'Unsupported';
-
-        for (const range of architectureData) {
-            if (isVersionInRange(version, range.from, range.to)) {
-                return `Supported! Use ${range.tool} 🎉`;
-            }
-        }
-
-        return 'Unsupported😔';
+  for (const range of architectureData) {
+    if (isVersionInRange(version, range.from, range.to)) {
+      return `Supported! Use ${range.tool} 🎉`;
     }
+  }
 
-    function isVersionInRange(version, min, max) {
-        const versionNumber = parseFloat(version);
-        const minNumber = parseFloat(min);
-        const maxNumber = parseFloat(max);
+  return 'Unsupported😔';
+}
 
-        return versionNumber >= minNumber && versionNumber <= maxNumber;
+function isVersionInRange(version, min, max) {
+  const versionNumber = parseFloat(version);
+  const minNumber = parseFloat(min);
+  const maxNumber = parseFloat(max);
+
+  return versionNumber >= minNumber && versionNumber <= maxNumber;
+}
+
+function setVersionType(type) {
+  selectedVersionType = type;
+  document.getElementById('releaseButton').classList.toggle('button-active', type === 'release');
+  document.getElementById('betaButton').classList.toggle('button-active', type === 'beta');
+}
+
+function openPicker() {
+  if (pickerDevice) {
+    pickerDevice.open();
+    return;
+  }
+
+  pickerDevice = app.picker.create({
+    inputEl: '#chooseDevice',
+    cols: [
+      {
+        textAlign: 'center',
+        values: deviceList.map(device => device.model)
+      }
+    ],
+    on: {
+      change(picker, values) {
+        const device = deviceList.find(d => d.model === values[0]);
+        selectedDevice = device;
+        selectedArchitecture = device.architecture;
+        iosVersion = getIOSVersion(); // Ensure iosVersion is updated
+
+        // Update the displayed selected device
+        document.getElementById('chooseDevice').innerText = selectedDevice.model;
+        document.getElementById('ios-version').innerText = iosVersion; // Update displayed iOS version
+      }
     }
+  });
 
-    function setVersionType(type) {
-        selectedVersionType = type;
-        document.getElementById('releaseButton').classList.toggle('button-active', type === 'release');
-        document.getElementById('betaButton').classList.toggle('button-active', type === 'beta');
-    }
+  pickerDevice.open();
+}
 
-    function openPicker() {
-        if (pickerDevice) {
-            pickerDevice.open();
-            return;
-        }
+function checkSupport() {
+  if (!selectedDevice || selectedDevice.model === 'Choose Device') {
+    app.dialog.alert('Please choose a device first.');
+    return;
+  }
 
-        pickerDevice = app.picker.create({
-            inputEl: '#chooseDevice',
-            cols: [
-                {
-                    textAlign: 'center',
-                    values: deviceList.map(device => device.model)
-                }
-            ],
-            on: {
-                change: function (picker, value) {
-                    selectedDevice = deviceList.find(device => device.model === value[0]);
-                    selectedArchitecture = selectedDevice.architecture;
+  const supportMessage = getTrollStoreSupport(iosVersion, selectedArchitecture, selectedVersionType);
+  const supportInfoElement = document.getElementById('supportInfo');
+  const cfwButton = document.getElementById('cfwButton');
+  let color = supportMessage.includes('Unsupported') ? 'red' : 'green';
 
-                    document.getElementById('chooseDevice').innerText = selectedDevice.model;
-                }
-            }
-        });
-    }
+  cfwButton.style.display = supportMessage.includes('Unsupported') ? 'inline-block' : 'none';
+  supportInfoElement.innerHTML = `<p>Architecture: ${selectedArchitecture}</p>
+                                  <p>iOS Version: ${iosVersion}</p>
+                                  <p style="color:${color};">TrollStore Support: ${supportMessage}</p>`;
+}
 
-    function checkSupport() {
-        if (!selectedDevice || selectedDevice.model === 'Choose Device') {
-            app.dialog.alert('Please choose a device first.');
-            return;
-        }
-
-        const supportMessage = getTrollStoreSupport(iosVersion, selectedArchitecture, selectedVersionType);
-        const supportInfoElement = document.getElementById('supportInfo');
-        const cfwButton = document.getElementById('cfwButton');
-        let color = supportMessage.includes('Unsupported') ? 'red' : 'green';
-
-        cfwButton.style.display = supportMessage.includes('Unsupported') ? 'inline-block' : 'none';
-        supportInfoElement.innerHTML = `<p>Architecture: ${selectedArchitecture}</p>
-                                        <p>iOS Version: ${iosVersion}</p>
-                                        <p style="color:${color};">TrollStore Support: ${supportMessage}</p>`;
-    }
 
     function displayiOSVersion() {
         document.getElementById('ios-version').innerText = iosVersion || 'Unknown';
