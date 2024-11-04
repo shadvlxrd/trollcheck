@@ -98,41 +98,61 @@
         return match ? match[1].replace('_', '.') : null;
     }
 
-    function getTrollStoreSupport(version, architecture, versionType) {
-    if (!version) return 'Unsupported 😔';
+    function getTrollStoreSupport(version, architecture) {
+    if (!version) return 'Unsupported';
 
     const versionNumber = parseFloat(version);
-    const isBeta = versionType === 'beta';
-    const supportMatrix = {
-        'arm64': {
-            '14.0': isBeta ? 'Unsupported 😔' : 'Unsupported 😔',
-            '14.1': isBeta ? 'Unsupported 😔' : 'Supported 🎉 (TrollInstallerX)',
-            '14.2': isBeta ? 'Unsupported 😔' : 'Supported 🎉 (TrollInstallerX)',
-            '14.8.1': isBeta ? 'Supported 🎉 (TrollInstallerX)' : 'Supported 🎉 (TrollInstallerX)',
-            '15.5': isBeta ? 'Unsupported 😔' : 'Supported 🎉 (TrollHelperOTA)',
-            '15.7': isBeta ? 'Supported 🎉 (TrollInstallerMDC)' : 'Supported 🎉 (TrollInstallerMDC)',
-            '15.7.2': isBeta ? 'Unsupported 😔' : 'Supported 🎉 (TrollMisaka)',
-            '16.0': isBeta ? 'Not Applicable' : 'Not Applicable',
-            '16.7': isBeta ? 'Unsupported 😔' : 'Supported 🎉 (TrollRestore)',
-            '17.0': isBeta ? 'Unsupported 😔' : 'Unsupported 😔'
+    
+    // Compatibility table for different architectures
+    const betaCompatibility = {
+        'arm64 (A8)': {
+            min: '14.0 beta 2',
+            max: '14.8.1',
+            unsupported: ['17.0 beta 1', '17.0.1']
         },
-        'arm64e': {
-            '14.0': isBeta ? 'Supported 🎉 (TrollHelperOTA)' : 'Supported 🎉 (TrollHelperOTA)',
-            '14.8.1': isBeta ? 'Supported 🎉 (TrollHelperOTA)' : 'Supported 🎉 (TrollHelperOTA)',
-            '15.0': isBeta ? 'Unsupported 😔' : 'Supported 🎉 (TrollHelperOTA)',
-            '15.5': isBeta ? 'Supported 🎉 (TrollInstallerX)' : 'Supported 🎉 (TrollInstallerX)',
-            '15.7': isBeta ? 'Supported 🎉 (TrollInstallerX)' : 'Supported 🎉 (TrollInstallerX)',
-            '16.0': isBeta ? 'Supported 🎉 (TrollInstallerX)' : 'Supported 🎉 (TrollInstallerX)',
-            '16.6.1': isBeta ? 'Supported 🎉 (TrollInstallerX)' : 'Supported 🎉 (TrollInstallerX)',
-            '17.0': isBeta ? 'Unsupported 😔' : 'Supported 🎉 (TrollRestore)',
-            '17.0.1': isBeta ? 'Unsupported 😔' : 'Unsupported 😔'
+        'arm64 (A9-A11)': {
+            min: '14.0 beta 2',
+            max: '17.0 beta 5',
+            unsupported: ['17.0.1']
+        },
+        'arm64e (A12-A17/M1-M2)': {
+            min: '14.0 beta 2',
+            max: '17.0 beta 5',
+            unsupported: ['17.0.1']
         }
     };
 
-    const architectureSupport = supportMatrix[architecture] || {};
-    return architectureSupport[version] || 'Unsupported 😔';
-}
+    const releaseCompatibility = {
+        'arm64 (A8)': {
+            min: '14.8',
+            max: '14.8.1',
+            unsupported: ['17.0']
+        },
+        'arm64 (A9-A11)': {
+            min: '14.8',
+            max: '17.0',
+            unsupported: ['17.0.1']
+        },
+        'arm64e (A12-A17/M1-M2)': {
+            min: '14.8',
+            max: '17.0',
+            unsupported: ['17.0.1']
+        }
+    };
 
+    const compatibility = selectedVersionType === 'beta' ? betaCompatibility : releaseCompatibility;
+    const archKey = architecture === 'arm64' ? `arm64 (A${selectedDevice.model.includes('6s') ? '9' : '9-A11'})` : architecture;
+
+    if (!compatibility[archKey]) return 'Unsupported';
+    
+    const { min, max, unsupported } = compatibility[archKey];
+    
+    if (version >= min && version <= max && !unsupported.includes(version)) {
+        return 'Supported!🎉';
+    } else {
+        return 'Unsupported😔';
+    }
+}
 
     function setVersionType(type) {
         selectedVersionType = type;
