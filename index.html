@@ -48,8 +48,8 @@
             <p>Device: Unknown</p>
             <p style="color:red;">TrollStore Support: Unknown</p>
           </div>
-          <div id="cfwButtonContainer" style="display: none;">
-            <a href="https://ios.cfw.guide" target="_blank" class="button button-raised button-fill">Check the guide</a>
+          <div id="cfwButtonContainer" style="display: none;" class="block inset">
+            <a href="https://ios.cfw.guide/installing-trollstore/" target="_blank" class="button button-raised button-fill external">Check the guide</a>
           </div>
         </div>
       </div>
@@ -104,43 +104,42 @@
         return 'Unsupported';
       }
 
-      // Convert the version string to a number for comparison
+      
       const versionNumber = parseFloat(version);
 
-      // Check if the version is unsupported
       if (versionNumber < 14 || versionNumber > 17.01) {
         return 'Unsupported';
       }
 
       const versionSupport = {
-        '14.0': 'Unsupported',
-        '14.1': 'TrollInstallerX',
-        '14.2': 'TrollHelperOTA',
-        '14.3': 'TrollHelperOTA',
-        '14.4': 'TrollHelperOTA',
-        '14.5': 'TrollHelperOTA',
-        '14.6': 'TrollHelperOTA',
-        '14.7': 'TrollHelperOTA',
-        '14.8': 'TrollHelperOTA',
-        '15.0': 'TrollHelperOTA',
-        '15.1': 'TrollHelperOTA',
-        '15.2': 'TrollHelperOTA',
-        '15.3': 'TrollHelperOTA',
-        '15.4': 'TrollHelperOTA',
-        '15.5': 'TrollInstallerMDC, TrollInstallerX, TrollHelperOTA',
-        '15.6': 'TrollInstallerMDC, TrollInstallerX, TrollHelperOTA',
-        '15.7': 'TrollInstallerMDC, TrollInstallerX',
-        '15.8': 'TrollMisaka, TrollInstallerX',
-        '16.0': 'TrollInstallerX',
-        '16.1': 'TrollInstallerX',
-        '16.2': 'TrollInstallerX',
-        '16.3': 'TrollInstallerX',
-        '16.4': 'TrollInstallerX',
-        '16.5': 'TrollInstallerX',
-        '16.6': 'TrollInstallerX',
-        '16.7': 'TrollInstallerX',
-        '17.0': 'TrollInstallerX',
-        '17.0.1': 'Unsupported'
+        '14.0': 'Unsupported😔',
+        '14.1': 'Supported!🎉',
+        '14.2': 'Supported!🎉',
+        '14.3': 'Supported!🎉',
+        '14.4': 'Supported!🎉',
+        '14.5': 'Supported!🎉',
+        '14.6': 'Supported!🎉',
+        '14.7': 'Supported!🎉',
+        '14.8': 'Supported!🎉',
+        '15.0': 'Supported!🎉',
+        '15.1': 'Supported!🎉',
+        '15.2': 'Supported!🎉',
+        '15.3': 'Supported!🎉',
+        '15.4': 'Supported!🎉',
+        '15.5': 'Supported!🎉',
+        '15.6': 'Supported!🎉',
+        '15.7': 'Supported!🎉',
+        '15.8': 'Supported!🎉',
+        '16.0': 'Supported!🎉',
+        '16.1': 'Supported!🎉',
+        '16.2': 'Supported!🎉',
+        '16.3': 'Supported!🎉',
+        '16.4': 'Supported!🎉',
+        '16.5': 'Supported!🎉',
+        '16.6': 'Supported!🎉',
+        '16.7': 'Supported!🎉',
+        '17.0': 'Supported!🎉',
+        '17.0.1': 'Unsupported 😔'
       };
 
       const support = versionSupport[version];
@@ -186,7 +185,6 @@
       const cfwButtonContainer = document.getElementById('cfwButtonContainer');
       let color;
 
-      // Clear previous support message
       const existingMessage = supportInfoElement.querySelector('p:last-of-type');
       if (existingMessage) {
         existingMessage.remove();
