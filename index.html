@@ -47,9 +47,8 @@
             <p>iOS Version: Unknown</p>
             <p>Device: Unknown</p>
             <p style="color:red;">TrollStore Support: Unknown</p>
+                 <a id="cfwButton" style="display:none;" href="https://ios.cfw.guide/installing-trollstore/" target="_blank" class="button button-raised button-fill external">Check the guide</a> 
           </div>
-          <div id="cfwButtonContainer" style="display: none;" class="block inset">
-            <a href="https://ios.cfw.guide/installing-trollstore/" target="_blank" class="button button-raised button-fill external">Check the guide</a>
           </div>
         </div>
       </div>
@@ -63,7 +62,7 @@
     var iosVersion = getIOSVersion();
 
     const deviceList = [
-      {model: 'Unknown', architecture:'Unknown'}, 
+      {model: 'Choose Device', architecture:''}, 
       { model: 'iPhone 6s', architecture: 'arm64' },
       { model: 'iPhone 6s Plus', architecture: 'arm64' },
       { model: 'iPhone 7', architecture: 'arm64' },
@@ -96,7 +95,7 @@
     function getIOSVersion() {
       const userAgent = navigator.userAgent;
       const match = userAgent.match(/OS (\d+_\d+)/);
-      return match ? match[1].replace('_', '.') : null; // Convert "14_0" to "14.0"
+      return match ? match[1].replace('_', '.') : null;
     }
 
     function getTrollStoreSupport(version, architecture) {
@@ -104,7 +103,6 @@
         return 'Unsupported';
       }
 
-      
       const versionNumber = parseFloat(version);
 
       if (versionNumber < 14 || versionNumber > 17.01) {
@@ -139,76 +137,107 @@
         '16.6': 'Supported!🎉',
         '16.7': 'Supported!🎉',
         '17.0': 'Supported!🎉',
-        '17.0.1': 'Unsupported 😔'
+        '17.0.1': 'Unsupported😔',
+        '17.1': 'Unsupported😔',
+        '17.1.1': 'Unsupported😔',
+        '17.2': 'Unsupported😔',
+        '17.2.1': 'Unsupported😔',
+        '17.3': 'Unsupported😔',
+        '17.3.1': 'Unsupported😔',
+        '17.4': 'Unsupported😔',
+        '17.4.1': 'Unsupported😔',
+        '17.5': 'Unsupported😔',
+        '17.5.1': 'Unsupported😔',
+        '17.6': 'Unsupported😔',
+        '17.7': 'Unsupported😔',
+        '17.8': 'Unsupported😔',
+        '17.9': 'Unsupported😔',
+        '17.10': 'Unsupported😔',
+        '17.11': 'Unsupported😔',
+        '17.12': 'Unsupported😔',
+        '17.13': 'Unsupported😔',
+        '17.14': 'Unsupported😔',
+        '17.15': 'Unsupported😔',
+        '17.16': 'Unsupported😔',
+        '17.17': 'Unsupported😔',
+        '17.18': 'Unsupported😔',
+        '17.19': 'Unsupported😔',
+        '17.20': 'Unsupported😔',
       };
 
-      const support = versionSupport[version];
-      if (support) {
-        return support.includes('Unsupported') ? 'Not Supported' : support;
-      }
-
-      return 'Unknown';
-    }
-
-    function openPicker() {
-      if (pickerDevice) {
-        pickerDevice.open();
-        return;
-      }
-
-      pickerDevice = app.picker.create({
-        inputEl: '#chooseDevice',
-        cols: [
-          {
-            textAlign: 'center',
-            values: deviceList.map(device => device.model)
-          }
-        ],
-        on: {
-          change: function (picker, value) {
-            selectedDevice = deviceList.find(device => device.model === value[0]);
-            selectedArchitecture = selectedDevice.architecture;
-            document.getElementById('supportInfo').innerHTML = `<p>Device: ${selectedDevice.model}</p><p>Architecture: ${selectedArchitecture}</p><p>iOS Version: ${iosVersion}</p>`;
-          }
-        }
-      });
-    }
-
-    function checkSupport() {
-      if (!selectedDevice) {
-        app.dialog.alert('Please select a device first.');
-        return;
-      }
-
-      const supportMessage = getTrollStoreSupport(iosVersion, selectedArchitecture);
-      const supportInfoElement = document.getElementById('supportInfo');
-      const cfwButtonContainer = document.getElementById('cfwButtonContainer');
-      let color;
-
-      const existingMessage = supportInfoElement.querySelector('p:last-of-type');
-      if (existingMessage) {
-        existingMessage.remove();
-      }
-
-      if (supportMessage === 'Not Supported') {
-        color = 'red';
-        cfwButtonContainer.style.display = 'none';
-      } else if (supportMessage === 'Unsupported') {
-        color = 'red';
-        cfwButtonContainer.style.display = 'none';
-      } else {
-        color = 'green';
-        cfwButtonContainer.style.display = 'block';
-      }
-
-      supportInfoElement.innerHTML += `<p style="color:${color};">TrollStore Support: ${supportMessage}</p>`;
+      return versionSupport[version] || 'Unsupported';
     }
 
     function setVersionType(type) {
       selectedVersionType = type;
-      document.getElementById('betaButton').classList.toggle('button-active', type === 'beta');
       document.getElementById('releaseButton').classList.toggle('button-active', type === 'release');
+      document.getElementById('betaButton').classList.toggle('button-active', type === 'beta');
     }
+
+    function checkSupport() {
+      const trollStoreSupport = getTrollStoreSupport(iosVersion, selectedArchitecture);
+      document.getElementById('supportInfo').innerHTML = `<p>Architecture: ${selectedArchitecture}</p><p>iOS Version: ${iosVersion}</p><p style="color:red;">TrollStore Support: ${trollStoreSupport}</p>`;
+      document.getElementById('cfwButton').style.display = trollStoreSupport.includes('Unsupported') ? 'inline-block' : 'none';
+    }
+
+    function openPicker() {
+    if (pickerDevice) {
+        pickerDevice.open();
+        return;
+    }
+
+    pickerDevice = app.picker.create({
+        inputEl: '#chooseDevice',
+        cols: [
+            {
+                textAlign: 'center',
+                values: deviceList.map(device => device.model)
+            }
+        ],
+        on: {
+            change: function (picker, value) {
+                selectedDevice = deviceList.find(device => device.model === value[0]);
+                selectedArchitecture = selectedDevice.architecture;
+                
+               
+                document.getElementById('chooseDevice').innerText = selectedDevice.model;
+            }
+        }
+    });
+}
+
+function checkSupport() {
+    // Check if a valid device is selected
+    if (!selectedDevice || selectedDevice.model === 'Choose Device') {
+        app.dialog.alert('Please choose a device first.');
+        return;
+    }
+
+    const supportMessage = getTrollStoreSupport(iosVersion, selectedArchitecture);
+    const supportInfoElement = document.getElementById('supportInfo');
+    const cfwButton = document.getElementById('cfwButton');
+    let color;
+
+  
+    const existingMessage = supportInfoElement.querySelector('p:last-of-type');
+    if (existingMessage) {
+        existingMessage.remove();
+    }
+
+    if (supportMessage === 'Not Supported') {
+        color = 'red';
+        cfwButton.style.display = 'none';
+    } else if (supportMessage === 'Unsupported') {
+        color = 'red';
+        cfwButton.style.display = 'none';
+    } else {
+        color = 'green';
+        cfwButton.style.display = 'block';
+    }
+
+    supportInfoElement.innerHTML += `<p style="color:${color};">TrollStore Support: ${supportMessage}</p>`;
+}
+
   </script>
 </body>
 </html>
