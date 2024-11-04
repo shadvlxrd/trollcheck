@@ -98,61 +98,59 @@
         return match ? match[1].replace('_', '.') : null;
     }
 
-    function getTrollStoreSupport(version, architecture) {
+    function getTrollStoreSupport(version, architecture, versionType) {
     if (!version) return 'Unsupported';
 
-    const versionNumber = parseFloat(version);
-    
-    // Compatibility table for different architectures
-    const betaCompatibility = {
-        'arm64 (A8)': {
-            min: '14.0 beta 2',
-            max: '14.8.1',
-            unsupported: ['17.0 beta 1', '17.0.1']
+    const compatibilityData = {
+        beta: {
+            'arm64 (A8)': [
+                { from: '14.0 beta 2', to: '14.8.1', tool: 'TrollInstallerX' }
+            ],
+            'arm64 (A9-A11)': [
+                { from: '14.0 beta 2', to: '17.0 beta 4', tool: 'TrollInstallerX' },
+                { from: '17.0 beta 5', to: '17.0', tool: 'TrollRestore' }
+            ],
+            'arm64e (A12-A17/M1-M2)': [
+                { from: '14.0 beta 2', to: '17.0 beta 4', tool: 'TrollHelperOTA' },
+                { from: '17.0 beta 5', to: '17.0', tool: 'TrollRestore' }
+            ]
         },
-        'arm64 (A9-A11)': {
-            min: '14.0 beta 2',
-            max: '17.0 beta 5',
-            unsupported: ['17.0.1']
-        },
-        'arm64e (A12-A17/M1-M2)': {
-            min: '14.0 beta 2',
-            max: '17.0 beta 5',
-            unsupported: ['17.0.1']
+        release: {
+            'arm64 (A8)': [
+                { from: '14.8', to: '14.8.1', tool: 'TrollInstallerX' }
+            ],
+            'arm64 (A9-A11)': [
+                { from: '14.8', to: '17.0', tool: 'TrollInstallerX' },
+                { from: '17.0', to: '17.0', tool: 'TrollRestore' }
+            ],
+            'arm64e (A12-A17/M1-M2)': [
+                { from: '14.8', to: '17.0', tool: 'TrollHelperOTA' },
+                { from: '17.0', to: '17.0', tool: 'TrollRestore' }
+            ]
         }
     };
 
-    const releaseCompatibility = {
-        'arm64 (A8)': {
-            min: '14.8',
-            max: '14.8.1',
-            unsupported: ['17.0']
-        },
-        'arm64 (A9-A11)': {
-            min: '14.8',
-            max: '17.0',
-            unsupported: ['17.0.1']
-        },
-        'arm64e (A12-A17/M1-M2)': {
-            min: '14.8',
-            max: '17.0',
-            unsupported: ['17.0.1']
+    // Select compatibility table based on version type
+    const architectureData = compatibilityData[versionType][architecture];
+    if (!architectureData) return 'Unsupported';
+
+    for (const range of architectureData) {
+        if (isVersionInRange(version, range.from, range.to)) {
+            return `Supported! Use ${range.tool} 🎉`;
         }
-    };
-
-    const compatibility = selectedVersionType === 'beta' ? betaCompatibility : releaseCompatibility;
-    const archKey = architecture === 'arm64' ? `arm64 (A${selectedDevice.model.includes('6s') ? '9' : '9-A11'})` : architecture;
-
-    if (!compatibility[archKey]) return 'Unsupported';
-    
-    const { min, max, unsupported } = compatibility[archKey];
-    
-    if (version >= min && version <= max && !unsupported.includes(version)) {
-        return 'Supported!🎉';
-    } else {
-        return 'Unsupported😔';
     }
+
+    return 'Unsupported😔';
 }
+
+function isVersionInRange(version, min, max) {
+    const versionNumber = parseFloat(version);
+    const minNumber = parseFloat(min);
+    const maxNumber = parseFloat(max);
+
+    return versionNumber >= minNumber && versionNumber <= maxNumber;
+}
+
 
     function setVersionType(type) {
         selectedVersionType = type;
@@ -213,9 +211,9 @@ function displayiOSVersion() {
     if (match) {
   
       const iOSVersion = match[1].replace(/_/g, '.');
-      iOSVersionElement.textContent = `iOS version detected: iOS ${iOSVersion}`;
+      iOSVersionElement.textContent = `${iOSVersion}`;
     } else {
-      iOSVersionElement.textContent = "iOS version not detected.";
+      iOSVersionElement.textContent = "Error";
     }
   } else {
     iOSVersionElement.textContent = "Not an iOS device";
