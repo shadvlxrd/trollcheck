@@ -150,11 +150,19 @@ function getTrollStoreSupport(version, architecture, versionType) {
 }
 
 function isVersionInRange(version, min, max) {
-  const versionNumber = parseFloat(version);
-  const minNumber = parseFloat(min);
-  const maxNumber = parseFloat(max);
+  const versionParts = version.split('.').map(Number);
+  const minParts = min.split('.').map(Number);
+  const maxParts = max.split('.').map(Number);
 
-  return versionNumber >= minNumber && versionNumber <= maxNumber;
+  for (let i = 0; i < 3; i++) {
+    const v = versionParts[i] || 0;
+    const minV = minParts[i] || 0;
+    const maxV = maxParts[i] || 0;
+
+    if (v < minV) return false;
+    if (v > maxV) return false;
+  }
+  return true;
 }
 
 function setVersionType(type) {
@@ -211,12 +219,12 @@ function checkSupport() {
                                   <p style="color:${color};">TrollStore Support: ${supportMessage}</p>`;
 }
 
+function displayiOSVersion() {
+  document.getElementById('ios-version').innerText = iosVersion || 'Unknown';
+}
 
-    function displayiOSVersion() {
-        document.getElementById('ios-version').innerText = iosVersion || 'Unknown';
-    }
+displayiOSVersion();
 
-    displayiOSVersion();
   </script>
 </body>
 </html>
