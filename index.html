@@ -45,7 +45,7 @@
           <div class="block-title">Support Information</div>
           <div id="supportInfo" class="block block-strong inset">
             <p>iOS Version: <span id="ios-version">Unknown</span></p>
-            <p>Device: Unknown</p>
+         
             <p style="color:red;">TrollStore Support: Unknown</p>
                  <a id="cfwButton" style="display:none;" href="https://ios.cfw.guide/installing-trollstore/" target="_blank" class="button button-raised button-fill external">Check the guide</a> 
           </div>
@@ -62,7 +62,7 @@
     var iosVersion = getIOSVersion();
 
     const deviceList = [
-      {model: 'Choose Device', architecture:''}, 
+      { model: 'Choose Device', architecture: '' }, 
       { model: 'iPhone 6s', architecture: 'arm64' },
       { model: 'iPhone 6s Plus', architecture: 'arm64' },
       { model: 'iPhone 7', architecture: 'arm64' },
@@ -93,150 +93,94 @@
     var pickerDevice = null;
 
     function getIOSVersion() {
-      const userAgent = navigator.userAgent;
-      const match = userAgent.match(/OS (\d+_\d+)/);
-      return match ? match[1].replace('_', '.') : null;
+        const userAgent = navigator.userAgent;
+        const match = userAgent.match(/OS (\d+_\d+)/);
+        return match ? match[1].replace('_', '.') : null;
     }
 
-    function getTrollStoreSupport(version, architecture) {
-      if (!version) {
-        return 'Unsupported';
-      }
+    function getTrollStoreSupport(version, architecture, versionType) {
+    if (!version) return 'Unsupported 😔';
 
-      const versionNumber = parseFloat(version);
+    const versionNumber = parseFloat(version);
+    const isBeta = versionType === 'beta';
+    const supportMatrix = {
+        'arm64': {
+            '14.0': isBeta ? 'Unsupported 😔' : 'Unsupported 😔',
+            '14.1': isBeta ? 'Unsupported 😔' : 'Supported 🎉 (TrollInstallerX)',
+            '14.2': isBeta ? 'Unsupported 😔' : 'Supported 🎉 (TrollInstallerX)',
+            '14.8.1': isBeta ? 'Supported 🎉 (TrollInstallerX)' : 'Supported 🎉 (TrollInstallerX)',
+            '15.5': isBeta ? 'Unsupported 😔' : 'Supported 🎉 (TrollHelperOTA)',
+            '15.7': isBeta ? 'Supported 🎉 (TrollInstallerMDC)' : 'Supported 🎉 (TrollInstallerMDC)',
+            '15.7.2': isBeta ? 'Unsupported 😔' : 'Supported 🎉 (TrollMisaka)',
+            '16.0': isBeta ? 'Not Applicable' : 'Not Applicable',
+            '16.7': isBeta ? 'Unsupported 😔' : 'Supported 🎉 (TrollRestore)',
+            '17.0': isBeta ? 'Unsupported 😔' : 'Unsupported 😔'
+        },
+        'arm64e': {
+            '14.0': isBeta ? 'Supported 🎉 (TrollHelperOTA)' : 'Supported 🎉 (TrollHelperOTA)',
+            '14.8.1': isBeta ? 'Supported 🎉 (TrollHelperOTA)' : 'Supported 🎉 (TrollHelperOTA)',
+            '15.0': isBeta ? 'Unsupported 😔' : 'Supported 🎉 (TrollHelperOTA)',
+            '15.5': isBeta ? 'Supported 🎉 (TrollInstallerX)' : 'Supported 🎉 (TrollInstallerX)',
+            '15.7': isBeta ? 'Supported 🎉 (TrollInstallerX)' : 'Supported 🎉 (TrollInstallerX)',
+            '16.0': isBeta ? 'Supported 🎉 (TrollInstallerX)' : 'Supported 🎉 (TrollInstallerX)',
+            '16.6.1': isBeta ? 'Supported 🎉 (TrollInstallerX)' : 'Supported 🎉 (TrollInstallerX)',
+            '17.0': isBeta ? 'Unsupported 😔' : 'Supported 🎉 (TrollRestore)',
+            '17.0.1': isBeta ? 'Unsupported 😔' : 'Unsupported 😔'
+        }
+    };
 
-      if (versionNumber < 14 || versionNumber > 17.01) {
-        return 'Unsupported';
-      }
+    const architectureSupport = supportMatrix[architecture] || {};
+    return architectureSupport[version] || 'Unsupported 😔';
+}
 
-      const versionSupport = {
-        '14.0': 'Unsupported😔',
-        '14.1': 'Supported!🎉',
-        '14.2': 'Supported!🎉',
-        '14.3': 'Supported!🎉',
-        '14.4': 'Supported!🎉',
-        '14.5': 'Supported!🎉',
-        '14.6': 'Supported!🎉',
-        '14.7': 'Supported!🎉',
-        '14.8': 'Supported!🎉',
-        '15.0': 'Supported!🎉',
-        '15.1': 'Supported!🎉',
-        '15.2': 'Supported!🎉',
-        '15.3': 'Supported!🎉',
-        '15.4': 'Supported!🎉',
-        '15.5': 'Supported!🎉',
-        '15.6': 'Supported!🎉',
-        '15.7': 'Supported!🎉',
-        '15.8': 'Supported!🎉',
-        '16.0': 'Supported!🎉',
-        '16.1': 'Supported!🎉',
-        '16.2': 'Supported!🎉',
-        '16.3': 'Supported!🎉',
-        '16.4': 'Supported!🎉',
-        '16.5': 'Supported!🎉',
-        '16.6': 'Supported!🎉',
-        '16.7': 'Supported!🎉',
-        '17.0': 'Supported!🎉',
-        '17.0.1': 'Unsupported😔',
-        '17.1': 'Unsupported😔',
-        '17.1.1': 'Unsupported😔',
-        '17.2': 'Unsupported😔',
-        '17.2.1': 'Unsupported😔',
-        '17.3': 'Unsupported😔',
-        '17.3.1': 'Unsupported😔',
-        '17.4': 'Unsupported😔',
-        '17.4.1': 'Unsupported😔',
-        '17.5': 'Unsupported😔',
-        '17.5.1': 'Unsupported😔',
-        '17.6': 'Unsupported😔',
-        '17.7': 'Unsupported😔',
-        '17.8': 'Unsupported😔',
-        '17.9': 'Unsupported😔',
-        '17.10': 'Unsupported😔',
-        '17.11': 'Unsupported😔',
-        '17.12': 'Unsupported😔',
-        '17.13': 'Unsupported😔',
-        '17.14': 'Unsupported😔',
-        '17.15': 'Unsupported😔',
-        '17.16': 'Unsupported😔',
-        '17.17': 'Unsupported😔',
-        '17.18': 'Unsupported😔',
-        '17.19': 'Unsupported😔',
-        '17.20': 'Unsupported😔',
-      };
-
-      return versionSupport[version] || 'Unsupported';
-    }
 
     function setVersionType(type) {
-      selectedVersionType = type;
-      document.getElementById('releaseButton').classList.toggle('button-active', type === 'release');
-      document.getElementById('betaButton').classList.toggle('button-active', type === 'beta');
-    }
-
-    function checkSupport() {
-      const trollStoreSupport = getTrollStoreSupport(iosVersion, selectedArchitecture);
-      document.getElementById('supportInfo').innerHTML = `<p>Architecture: ${selectedArchitecture}</p><p>iOS Version: ${iosVersion}</p><p style="color:red;">TrollStore Support: ${trollStoreSupport}</p>`;
-      document.getElementById('cfwButton').style.display = trollStoreSupport.includes('Unsupported') ? 'inline-block' : 'none';
+        selectedVersionType = type;
+        document.getElementById('releaseButton').classList.toggle('button-active', type === 'release');
+        document.getElementById('betaButton').classList.toggle('button-active', type === 'beta');
     }
 
     function openPicker() {
-    if (pickerDevice) {
-        pickerDevice.open();
-        return;
-    }
-
-    pickerDevice = app.picker.create({
-        inputEl: '#chooseDevice',
-        cols: [
-            {
-                textAlign: 'center',
-                values: deviceList.map(device => device.model)
-            }
-        ],
-        on: {
-            change: function (picker, value) {
-                selectedDevice = deviceList.find(device => device.model === value[0]);
-                selectedArchitecture = selectedDevice.architecture;
-                
-               
-                document.getElementById('chooseDevice').innerText = selectedDevice.model;
-            }
+        if (pickerDevice) {
+            pickerDevice.open();
+            return;
         }
-    });
-}
 
-function checkSupport() {
-   
-    if (!selectedDevice || selectedDevice.model === 'Choose Device') {
-        app.dialog.alert('Please choose a device first.');
-        return;
+        pickerDevice = app.picker.create({
+            inputEl: '#chooseDevice',
+            cols: [
+                {
+                    textAlign: 'center',
+                    values: deviceList.map(device => device.model)
+                }
+            ],
+            on: {
+                change: function (picker, value) {
+                    selectedDevice = deviceList.find(device => device.model === value[0]);
+                    selectedArchitecture = selectedDevice.architecture;
+
+                    document.getElementById('chooseDevice').innerText = selectedDevice.model;
+                }
+            }
+        });
     }
 
-    const supportMessage = getTrollStoreSupport(iosVersion, selectedArchitecture);
-    const supportInfoElement = document.getElementById('supportInfo');
-    const cfwButton = document.getElementById('cfwButton');
-    let color;
+    function checkSupport() {
+        if (!selectedDevice || selectedDevice.model === 'Choose Device') {
+            app.dialog.alert('Please choose a device first.');
+            return;
+        }
 
-  
-    const existingMessage = supportInfoElement.querySelector('p:last-of-type');
-    if (existingMessage) {
-        existingMessage.remove();
+        const supportMessage = getTrollStoreSupport(iosVersion, selectedArchitecture);
+        const supportInfoElement = document.getElementById('supportInfo');
+        const cfwButton = document.getElementById('cfwButton');
+        let color = supportMessage === 'Unsupported' ? 'red' : 'green';
+
+        cfwButton.style.display = supportMessage.includes('Unsupported') ? 'inline-block' : 'none';
+        supportInfoElement.innerHTML = `<p>Architecture: ${selectedArchitecture}</p>
+                                        <p>iOS Version: ${iosVersion}</p>
+                                        <p style="color:${color};">TrollStore Support: ${supportMessage}</p>`;
     }
-
-    if (supportMessage === 'Not Supported') {
-        color = 'red';
-        cfwButton.style.display = 'none';
-    } else if (supportMessage === 'Unsupported') {
-        color = 'red';
-        cfwButton.style.display = 'none';
-    } else {
-        color = 'green';
-        cfwButton.style.display = 'block';
-    }
-
-    supportInfoElement.innerHTML += `<p style="color:${color};">TrollStore Support: ${supportMessage}</p>`;
-}
 function displayiOSVersion() {
   const userAgent = navigator.userAgent || navigator.vendor || window.opera;
   const iOSVersionElement = document.getElementById("ios-version");
@@ -247,7 +191,7 @@ function displayiOSVersion() {
     const match = userAgent.match(/OS (\d+_\d+(_\d+)?)/);
     
     if (match) {
-      // Format the version string by replacing underscores with dots
+  
       const iOSVersion = match[1].replace(/_/g, '.');
       iOSVersionElement.textContent = `iOS version detected: iOS ${iOSVersion}`;
     } else {
@@ -258,7 +202,6 @@ function displayiOSVersion() {
   }
 }
 
-// Call the function to display the iOS version
 displayiOSVersion();
 
   </script>
