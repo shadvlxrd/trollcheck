@@ -26,8 +26,8 @@
           <div class="block-title">Version Type</div>
           <div class="block block-strong inset">
             <div class="segmented segmented-strong">
+                <a id="releaseButton" class="button button-active" onclick="setVersionType('release')">Release</a> 
               <a id="betaButton" class="button" onclick="setVersionType('beta')">Beta</a>
-              <a id="releaseButton" class="button button-active" onclick="setVersionType('release')">Release</a>
               <span class="segmented-highlight"></span>
             </div>
           </div>
@@ -45,7 +45,11 @@
           <div class="block-title">Support Information</div>
           <div id="supportInfo" class="block block-strong inset">
             <p>iOS Version: Unknown</p>
+            <p>Device: Unknown</p>
             <p style="color:red;">TrollStore Support: Unknown</p>
+          </div>
+          <div id="cfwButtonContainer" style="display: none;">
+            <a href="https://ios.cfw.guide" target="_blank" class="button">Open iOS CFW Guide</a>
           </div>
         </div>
       </div>
@@ -173,12 +177,33 @@
 
     function checkSupport() {
       if (!selectedDevice) {
-        alert('Please select a device first.');
+        app.dialog.alert('Please select a device first.');
         return;
       }
 
       const supportMessage = getTrollStoreSupport(iosVersion, selectedArchitecture);
-      document.getElementById('supportInfo').innerHTML += `<p style="color:red;">TrollStore Support: ${supportMessage}</p>`;
+      const supportInfoElement = document.getElementById('supportInfo');
+      const cfwButtonContainer = document.getElementById('cfwButtonContainer');
+      let color;
+
+      // Clear previous support message
+      const existingMessage = supportInfoElement.querySelector('p:last-of-type');
+      if (existingMessage) {
+        existingMessage.remove();
+      }
+
+      if (supportMessage === 'Not Supported') {
+        color = 'red';
+        cfwButtonContainer.style.display = 'none';
+      } else if (supportMessage === 'Unsupported') {
+        color = 'red';
+        cfwButtonContainer.style.display = 'none';
+      } else {
+        color = 'green';
+        cfwButtonContainer.style.display = 'block';
+      }
+
+      supportInfoElement.innerHTML += `<p style="color:${color};">TrollStore Support: ${supportMessage}</p>`;
     }
 
     function setVersionType(type) {
