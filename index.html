@@ -66,12 +66,13 @@ const deviceList = [
   { model: 'iPhone 8', architecture: 'arm64' },
   { model: 'iPhone 8 Plus', architecture: 'arm64' },
   { model: 'iPhone X', architecture: 'arm64e' },
-  { model: 'iPhone XR', architecture: 'arm64e' },
+  { model: 'iPhone XR', architecture: 'arm64' },
   { model: 'iPhone XS', architecture: 'arm64e' },
   { model: 'iPhone XS Max', architecture: 'arm64e' },
   { model: 'iPhone 11', architecture: 'arm64e' },
   { model: 'iPhone 11 Pro', architecture: 'arm64e' },
   { model: 'iPhone 11 Pro Max', architecture: 'arm64e' },
+  { model: 'iPhone SE(2nd generation)', architecture: 'arm64e' }, 
   { model: 'iPhone 12 mini', architecture: 'arm64e' },
   { model: 'iPhone 12', architecture: 'arm64e' },
   { model: 'iPhone 12 Pro', architecture: 'arm64e' },
@@ -80,6 +81,7 @@ const deviceList = [
   { model: 'iPhone 13', architecture: 'arm64e' },
   { model: 'iPhone 13 Pro', architecture: 'arm64e' },
   { model: 'iPhone 13 Pro Max', architecture: 'arm64e' },
+  { model: 'iPhone SE(3rd generation)', archotercture: 'arm64e' }, 
   { model: 'iPhone 14', architecture: 'arm64e' },
   { model: 'iPhone 14 Plus', architecture: 'arm64e' },
   { model: 'iPhone 14 Pro', architecture: 'arm64e' },
@@ -87,24 +89,33 @@ const deviceList = [
 ];
 
 const iosVersions = [
-  '14.0 Beta 1', '14.0', '14.1', '14.2', '14.3', '14.4', '14.5', '14.5.1', '14.6', '14.7', '14.8', '14.8.1', 
-  '15.0', '15.1', '15.2', '15.3', '15.4', '15.5', '15.6', '15.7', '15.8', '15.8.1', '15.8.2', '15.8.3', 
+  '14.0 Beta 1', '14.0', '14.1', '14.2', '14.3', '14.4', '14.5', '14.5.1', '14.6', '14.7','14.7.1', '14.8', '14.8.1', 
+  '15.0', '15.1', '15.2', '15.3', '15.4', '15.5', '15.6', '15.7','15.7.1', '15.7.2', '15.7.3','15.7.4','15.7.5','15.7.6','15.7.7','15.7.8','15.7.9', '15.8', '15.8.1', '15.8.2', '15.8.3', 
   '16.0', '16.1', '16.2', '16.3', '16.4', '16.5', '16.6', '16.7 RC', '16.7', '16.7.10', '17.0', '17.0.1'
 ];
 
 const versionSupport = {
   '14.0 Beta 1': 'Unsupported😔',
   '14.0': 'Supported!🎉',
+  '14.7.1': 'Supported!🎉',
   '14.8.1': 'Supported!🎉',
   '15.0': 'Supported!🎉',
   '15.5 Beta 4': 'Supported!🎉',
   '15.5': 'Supported!🎉',
   '15.6 Beta 1': 'Supported!🎉',
   '15.6 Beta 3': 'Supported!🎉',
+  '15.6': 'Supported🎉', 
   '15.6.1': 'Supported!🎉',
   '15.7': 'Supported!🎉',
   '15.7.1': 'Supported!🎉',
   '15.7.2': 'Supported!🎉',
+  '15.7.3': 'Supported!🎉',
+  '15.7.4': 'Supported!🎉',
+  '15.7.5': 'Supported!🎉',
+  '15.7.6': 'Supported!🎉',
+  '15.7.7': 'Supported!🎉',
+  '15.7.8': 'Supported!🎉',
+  '15.7.9': 'Supported!🎉',
   '15.8.3': 'Supported!🎉',
   '16.0 Beta 1': 'Supported!🎉',
   '16.0 Beta 3': 'Supported!🎉',
@@ -218,11 +229,12 @@ function getSupportedVersionRange(deviceModel) {
     case 'iPhone 6s Plus':
     case 'iPhone 7':
     case 'iPhone 7 Plus':
-      return ['14.0', '15.7.1'];
+    case 'iPhone SE(1st generation)':
+      return ['14.0', '15.8.3'];
     case 'iPhone 8':
     case 'iPhone 8 Plus':
     case 'iPhone X':
-      return ['14.0', '16.7'];
+      return ['14.0', '16.7.10'];
     case 'iPhone 13 mini':
     case 'iPhone 13':
     case 'iPhone 13 Pro':
@@ -235,6 +247,11 @@ function getSupportedVersionRange(deviceModel) {
       return ['16.0', '17.0.1'];
     default:
       return ['14.0', '17.0.1'];
+      case 'iPhone SE(2nd generation)':
+      return ['14.0', '17.0.1'];
+      case 'iPhone SE(3rd generation)':
+      return ['15.4', '17.0.1'];
+      
   }
 }
 
