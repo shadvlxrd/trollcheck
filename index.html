@@ -236,7 +236,7 @@
     if (match) {
      
       const iOSVersion = match[1].replace(/_/g, '.');
-      iOSVersionElement.textContent = `iOS version detected: iOS ${iOSVersion}`;
+      iOSVersionElement.textContent = `${iOSVersion}`;
     } else {
       iOSVersionElement.textContent = "iOS version not detected.";
     }
