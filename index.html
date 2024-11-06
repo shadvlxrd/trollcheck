@@ -53,44 +53,46 @@
   <script src="app.js"></script>
   <script>
     var selectedVersionType = 'release';
-    var selectedDevice = null;
-    var selectedArchitecture = 'arm64';
-    var iosVersion = null;
+var selectedDevice = null;
+var selectedArchitecture = 'arm64';
+var iosVersion = null;
 
-    const deviceList = [
-      { model: 'Choose Device', architecture: '' }, 
-      { model: 'iPhone 6s', architecture: 'arm64' },
-      { model: 'iPhone 6s Plus', architecture: 'arm64' },
-      { model: 'iPhone 7', architecture: 'arm64' },
-      { model: 'iPhone 7 Plus', architecture: 'arm64' },
-      { model: 'iPhone 8', architecture: 'arm64' },
-      { model: 'iPhone 8 Plus', architecture: 'arm64' },
-      { model: 'iPhone X', architecture: 'arm64e' },
-      { model: 'iPhone XR', architecture: 'arm64e' },
-      { model: 'iPhone XS', architecture: 'arm64e' },
-      { model: 'iPhone XS Max', architecture: 'arm64e' },
-      { model: 'iPhone 11', architecture: 'arm64e' },
-      { model: 'iPhone 11 Pro', architecture: 'arm64e' },
-      { model: 'iPhone 11 Pro Max', architecture: 'arm64e' },
-      { model: 'iPhone 12 mini', architecture: 'arm64e' },
-      { model: 'iPhone 12', architecture: 'arm64e' },
-      { model: 'iPhone 12 Pro', architecture: 'arm64e' },
-      { model: 'iPhone 12 Pro Max', architecture: 'arm64e' },
-      { model: 'iPhone 13 mini', architecture: 'arm64e' },
-      { model: 'iPhone 13', architecture: 'arm64e' },
-      { model: 'iPhone 13 Pro', architecture: 'arm64e' },
-      { model: 'iPhone 13 Pro Max', architecture: 'arm64e' },
-      { model: 'iPhone 14', architecture: 'arm64e' },
-      { model: 'iPhone 14 Plus', architecture: 'arm64e' },
-      { model: 'iPhone 14 Pro', architecture: 'arm64e' },
-      { model: 'iPhone 14 Pro Max', architecture: 'arm64e' }
-    ];
+const deviceList = [
+  { model: 'Choose Device', architecture: '' }, 
+  { model: 'iPhone 6s', architecture: 'arm64' },
+  { model: 'iPhone 6s Plus', architecture: 'arm64' },
+  { model: 'iPhone 7', architecture: 'arm64' },
+  { model: 'iPhone 7 Plus', architecture: 'arm64' },
+  { model: 'iPhone 8', architecture: 'arm64' },
+  { model: 'iPhone 8 Plus', architecture: 'arm64' },
+  { model: 'iPhone X', architecture: 'arm64e' },
+  { model: 'iPhone XR', architecture: 'arm64e' },
+  { model: 'iPhone XS', architecture: 'arm64e' },
+  { model: 'iPhone XS Max', architecture: 'arm64e' },
+  { model: 'iPhone 11', architecture: 'arm64e' },
+  { model: 'iPhone 11 Pro', architecture: 'arm64e' },
+  { model: 'iPhone 11 Pro Max', architecture: 'arm64e' },
+  { model: 'iPhone 12 mini', architecture: 'arm64e' },
+  { model: 'iPhone 12', architecture: 'arm64e' },
+  { model: 'iPhone 12 Pro', architecture: 'arm64e' },
+  { model: 'iPhone 12 Pro Max', architecture: 'arm64e' },
+  { model: 'iPhone 13 mini', architecture: 'arm64e' },
+  { model: 'iPhone 13', architecture: 'arm64e' },
+  { model: 'iPhone 13 Pro', architecture: 'arm64e' },
+  { model: 'iPhone 13 Pro Max', architecture: 'arm64e' },
+  { model: 'iPhone 14', architecture: 'arm64e' },
+  { model: 'iPhone 14 Plus', architecture: 'arm64e' },
+  { model: 'iPhone 14 Pro', architecture: 'arm64e' },
+  { model: 'iPhone 14 Pro Max', architecture: 'arm64e' }
+];
 
-    const iosVersions = [
-      '14.0 Beta 1','14.0', '14.1', '14.2', '14.3', '14.4', '14.5','14.5.1','14.6', '14.7', '14.8','14.8.1', '15.0', '15.1', '15.2', '15.3', '15.4', '15.5', '15.6', '15.7', '15.8','15.8.1','15.8.2','15.8.3','16.0', '16.1', '16.2', '16.3', '16.4', '16.5', '16.6','16.7 RC', '16.7','16.7.10','17.0', '17.0.1'
-    ];
+const iosVersions = [
+  '14.0 Beta 1', '14.0', '14.1', '14.2', '14.3', '14.4', '14.5', '14.5.1', '14.6', '14.7', '14.8', '14.8.1', 
+  '15.0', '15.1', '15.2', '15.3', '15.4', '15.5', '15.6', '15.7', '15.8', '15.8.1', '15.8.2', '15.8.3', 
+  '16.0', '16.1', '16.2', '16.3', '16.4', '16.5', '16.6', '16.7 RC', '16.7', '16.7.10', '17.0', '17.0.1'
+];
 
-    const versionSupport = {
+const versionSupport = {
   '14.0 Beta 1': 'Unsupported😔',
   '14.0': 'Supported!🎉',
   '14.8.1': 'Supported!🎉',
@@ -139,90 +141,123 @@
   '16.6': 'Supported!🎉', 
 };
 
+let pickerDevice;
+let pickerVersion;
 
-    let pickerDevice;
-    let pickerVersion;
+function setVersionType(type) {
+  selectedVersionType = type;
+  document.getElementById('releaseButton').classList.toggle('button-active', type === 'release');
+  document.getElementById('betaButton').classList.toggle('button-active', type === 'beta');
+}
 
-    function setVersionType(type) {
-      selectedVersionType = type;
-      document.getElementById('releaseButton').classList.toggle('button-active', type === 'release');
-      document.getElementById('betaButton').classList.toggle('button-active', type === 'beta');
-    }
+function openDevicePicker() {
+  if (pickerDevice) {
+    pickerDevice.open();
+    return;
+  }
 
-    function openDevicePicker() {
-      if (pickerDevice) {
-        pickerDevice.open();
-        return;
+  pickerDevice = app.picker.create({
+    inputEl: '#chooseDevice',
+    cols: [
+      {
+        textAlign: 'center',
+        values: deviceList.map(device => device.model)
       }
+    ],
+    on: {
+      change(picker, values) {
+        const device = deviceList.find(d => d.model === values[0]);
+        selectedDevice = device && device.model !== 'Choose Device' ? device : null;
+        selectedArchitecture = device ? device.architecture : 'arm64';
 
-      pickerDevice = app.picker.create({
-        inputEl: '#chooseDevice',
-        cols: [
-          {
-            textAlign: 'center',
-            values: deviceList.map(device => device.model)
-          }
-        ],
-        on: {
-          change(picker, values) {
-            const device = deviceList.find(d => d.model === values[0]);
-            selectedDevice = device && device.model !== 'Choose Device' ? device : null;
-            selectedArchitecture = device ? device.architecture : 'arm64';
+        document.getElementById('chooseDevice').innerText = selectedDevice ? selectedDevice.model : 'Choose Device';
 
-            document.getElementById('chooseDevice').innerText = selectedDevice ? selectedDevice.model : 'Choose Device';
-          }
+        
+        iosVersion = null;
+        document.getElementById('chooseVersion').innerText = 'Choose Version';
+        if (pickerVersion) {
+          pickerVersion.destroy();
+          pickerVersion = null;
         }
-      });
-      pickerDevice.open();
-    }
-
-    function openVersionPicker() {
-      if (pickerVersion) {
-        pickerVersion.open();
-        return;
-      }
-
-      pickerVersion = app.picker.create({
-        inputEl: '#chooseVersion',
-        cols: [
-          {
-            textAlign: 'center',
-            values: iosVersions.map(version => selectedVersionType === 'beta' ? `${version} Beta` : version)
-          }
-        ],
-        on: {
-          change(picker, values) {
-            iosVersion = values[0];
-            document.getElementById('chooseVersion').innerText = iosVersion;
-          }
-        }
-      });
-      pickerVersion.open();
-    }
-
-    function checkSupport() {
-      const supportInfoElement = document.getElementById('trollstore-support');
-
-      if (!selectedDevice || !iosVersion) {
-        app.dialog.alert('Please select a device and an iOS version!');
-        return;
-      }
-
-      const supportMessage = versionSupport[iosVersion] || 'Unknown Version';
-      const supportDetails = `Device Model: ${selectedDevice.model}<br>
-                              iOS Version: ${iosVersion}<br>
-                              Architecture: ${selectedArchitecture}`;
-      supportInfoElement.innerHTML = `${supportDetails}<br>
-                                      TrollStore Support: <span style="color: ${supportMessage.includes('Supported') ? 'green' : 'red'};">${supportMessage}</span>`;
-      supportInfoElement.style.color = supportMessage.includes('Supported') ? 'green' : 'red';
-
-      const cfwButton = document.getElementById('cfwButton');
-      if (supportMessage === 'Unsupported😔') {
-        cfwButton.style.display = 'none'; 
-      } else {
-        cfwButton.style.display = 'block';
       }
     }
+  });
+  pickerDevice.open();
+}
+
+function openVersionPicker() {
+ 
+  if (pickerVersion) {
+    pickerVersion.destroy();
+  }
+
+  const [minVersion, maxVersion] = getSupportedVersionRange(selectedDevice.model);
+  const compatibleVersions = iosVersions.filter(version => version >= minVersion && version <= maxVersion);
+
+  pickerVersion = app.picker.create({
+    inputEl: '#chooseVersion',
+    cols: [
+      {
+        textAlign: 'center',
+        values: compatibleVersions
+      }
+    ],
+    on: {
+      change(picker, values) {
+        iosVersion = values[0];
+        document.getElementById('chooseVersion').innerText = iosVersion;
+      }
+    }
+  });
+  pickerVersion.open();
+}
+
+function getSupportedVersionRange(deviceModel) {
+  switch(deviceModel) {
+    case 'iPhone 6s':
+    case 'iPhone 6s Plus':
+    case 'iPhone 7':
+    case 'iPhone 7 Plus':
+      return ['14.0', '15.7.1'];
+    case 'iPhone 8':
+    case 'iPhone 8 Plus':
+    case 'iPhone X':
+      return ['14.0', '16.7'];
+    case 'iPhone 13 mini':
+    case 'iPhone 13':
+    case 'iPhone 13 Pro':
+    case 'iPhone 13 Pro Max':
+      return ['15.0', '17.0.1'];
+    case 'iPhone 14':
+    case 'iPhone 14 Plus':
+    case 'iPhone 14 Pro':
+    case 'iPhone 14 Pro Max':
+      return ['16.0', '17.0.1'];
+    default:
+      return ['14.0', '17.0.1'];
+  }
+}
+
+function checkSupport() {
+  const supportInfoElement = document.getElementById('trollstore-support');
+
+  if (!selectedDevice || !iosVersion) {
+    app.dialog.alert('Please select a device and an iOS version!');
+    return;
+  }
+
+  const supportMessage = versionSupport[iosVersion] || 'Unknown Version';
+  const supportDetails = `Device Model: ${selectedDevice.model}<br>
+                          iOS Version: ${iosVersion}<br>
+                          Architecture: ${selectedArchitecture}<br>
+                          TrollStore Support: <span style="color: ${supportMessage.includes('Supported') ? 'green' : 'red'};">${supportMessage}</span>`;
+  supportInfoElement.innerHTML = supportDetails;
+  supportInfoElement.style.color = supportMessage.includes('Supported') ? 'green' : 'red';
+
+  const cfwButton = document.getElementById('cfwButton');
+  cfwButton.style.display = supportMessage === 'Unsupported😔' ? 'none' : 'block';
+}
+
     function displayiOSVersion() {
   const userAgent = navigator.userAgent || navigator.vendor || window.opera;
   const iOSVersionElement = document.getElementById("ios-version");
