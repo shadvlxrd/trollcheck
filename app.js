@@ -1,8 +1,8 @@
 var app = new Framework7({
   el: "#app", 
 	theme: "ios",	
-  name: 'TSChecker',
-	id: 'com.TSChecker.trollstore',
+  name: 'TrollCheck',
+	id: 'com.Outlander.TrollCheck',
 	serviceWorker: {
 		path: "./service-worker.js"
 	}
@@ -10,6 +10,7 @@ var app = new Framework7({
 
 var mainView = app.views.create('.view-main');
 function toggleDarkMode() {
+  
     document.querySelector("html").classList.toggle("dark");
 }
 
