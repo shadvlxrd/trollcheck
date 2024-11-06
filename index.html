@@ -8,6 +8,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <title>TSChecker</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/framework7@8.3.3/framework7-bundle.min.css" integrity="sha256-cK8qB/ROffwYFEJ4KDE1DKIQqES7GT1/VmrZr+KWfqw=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/framework7-icons@5.0.5/css/framework7-icons.css" integrity="sha256-RSzKDnaL5c8/Ksi7QeDBiOtJSr5k3LbqDGqs4NKDl7M=" crossorigin="anonymous">
 </head>
 <body>
   <div id="app">
@@ -23,208 +24,231 @@
           </div>
         </div>
         <div class="page-content">
-          <div class="block-title">Version Type</div>
-          <div class="block block-strong inset">
-            <div class="segmented segmented-strong">
-              <a id="releaseButton" class="button button-active" onclick="setVersionType('release')">Release</a> 
-              <a id="betaButton" class="button" onclick="setVersionType('beta')">Beta</a>
-              <span class="segmented-highlight"></span>
-            </div>
-          </div>
+            <div class="block inset"><h3>Estimated iOS version: <span id="ios-version"></span></h3></div>
           <div class="block-title">Choose Device</div>
-          <div class="list list-strong-ios list-dividers-ios inset-ios">
+          <div class="list list-strong list-dividers inset">
             <ul>
               <li>
-                <a id="chooseDevice" class="list-button" onclick="openPicker()">Choose Device</a>
+                <a id="chooseDevice" class="list-button" onclick="openDevicePicker()">Choose Device</a>
               </li>
               <li>
-                <a onclick="checkSupport()" type="button" class="list-button">Check Support</a>
+                <a id="chooseVersion" class="list-button" onclick="openVersionPicker()">Choose iOS Version</a>
+              </li>
+              <li>
+                <a onclick="checkSupport()" type="button" class="list-button">Check compatibility</a>
               </li>
             </ul>
           </div>
           <div class="block-title">Support Information</div>
-          <div id="supportInfo" class="block block-strong inset">
-            <p>iOS Version: <span id="ios-version">Unknown</span></p>
-            <p style="color:red;">TrollStore Support: Unknown</p>
+          <div id="supportInfo" class="block block-strong inset">    
+            <p id="trollstore-support" style="color:red;">TrollStore Support: Unknown</p>
             <a id="cfwButton" style="display:none;" href="https://ios.cfw.guide/installing-trollstore/" target="_blank" class="button button-raised button-fill external">Check the guide</a> 
-          </div>
-        </div>
+          </div>     
+        <div class="list list-strong list-dividers media-list inset"><p><ul><li><a href="https://x.com/Outland3r2007/" class="item-link item-content external"><div class="item-media"><i class="f7-icons">logo_twitter</i></div><div class="item-inner"><div class="item-title-row"><div class="item-title">Follow me</div></div></div></a></li><li><a href="https://www.paypal.com/donate/?hosted_button_id=764DYR9PAFGUY" class="item-link item-content external"><div class="item-media"><i class="f7-icons color-red">heart_fill</i></div><div class="item-inner"><div class="item-title-row"><div class="item-title">Donate</div></div></div></a></li><li><a href="https://discord.gg/A2gqUuGq " class="item-link item-content external"><div class="item-media"><i class="f7-icons">bubble_left_bubble_right_fill</i></div><div class="item-inner"><div class="item-title-row"><div class="item-title">Join Discord</div></div></div></a></li>
+        <li><a href="https://github.com/Outland3r2007/trollcheck" class="item-link item-content external"><div class="item-media"><i class="f7-icons">logo_github</i></div><div class="item-inner"><div class="item-title-row"><div class="item-title">GitHub</div></div></div></a></li></ul>
       </div>
     </div>
   </div>
-
-  <script src="https://cdn.jsdelivr.net/npm/framework7@8.3.3/framework7-bundle.min.js" integrity="sha256-1r9ib4mhGW3+qxoxb4nz2z4GkQqNG/CUa4Emli2pL2I=" crossorigin="anonymous"></script><script src="app.js"></script>
-  <script>     
+  <script src="https://cdn.jsdelivr.net/npm/framework7@8.3.3/framework7-bundle.min.js" integrity="sha256-1r9ib4mhGW3+qxoxb4nz2z4GkQqNG/CUa4Emli2pL2I=" crossorigin="anonymous"></script>
+  <script src="app.js"></script>
+  <script>
     var selectedVersionType = 'release';
-var selectedDevice = null;
-var selectedArchitecture = 'arm64';
-var iosVersion = getIOSVersion();
+    var selectedDevice = null;
+    var selectedArchitecture = 'arm64';
+    var iosVersion = null;
 
-const deviceList = [
-  { model: 'Choose Device', architecture: '' }, 
-  { model: 'iPhone 6s', architecture: 'arm64' },
-  { model: 'iPhone 6s Plus', architecture: 'arm64' },
-  { model: 'iPhone 7', architecture: 'arm64' },
-  { model: 'iPhone 7 Plus', architecture: 'arm64' },
-  { model: 'iPhone 8', architecture: 'arm64' },
-  { model: 'iPhone 8 Plus', architecture: 'arm64' },
-  { model: 'iPhone X', architecture: 'arm64e' },
-  { model: 'iPhone XR', architecture: 'arm64e' },
-  { model: 'iPhone XS', architecture: 'arm64e' },
-  { model: 'iPhone XS Max', architecture: 'arm64e' },
-  { model: 'iPhone 11', architecture: 'arm64e' },
-  { model: 'iPhone 11 Pro', architecture: 'arm64e' },
-  { model: 'iPhone 11 Pro Max', architecture: 'arm64e' },
-  { model: 'iPhone 12 mini', architecture: 'arm64e' },
-  { model: 'iPhone 12', architecture: 'arm64e' },
-  { model: 'iPhone 12 Pro', architecture: 'arm64e' },
-  { model: 'iPhone 12 Pro Max', architecture: 'arm64e' },
-  { model: 'iPhone 13 mini', architecture: 'arm64e' },
-  { model: 'iPhone 13', architecture: 'arm64e' },
-  { model: 'iPhone 13 Pro', architecture: 'arm64e' },
-  { model: 'iPhone 13 Pro Max', architecture: 'arm64e' },
-  { model: 'iPhone 14', architecture: 'arm64e' },
-  { model: 'iPhone 14 Plus', architecture: 'arm64e' },
-  { model: 'iPhone 14 Pro', architecture: 'arm64e' },
-  { model: 'iPhone 14 Pro Max', architecture: 'arm64e' }
-];
+    const deviceList = [
+      { model: 'Choose Device', architecture: '' }, 
+      { model: 'iPhone 6s', architecture: 'arm64' },
+      { model: 'iPhone 6s Plus', architecture: 'arm64' },
+      { model: 'iPhone 7', architecture: 'arm64' },
+      { model: 'iPhone 7 Plus', architecture: 'arm64' },
+      { model: 'iPhone 8', architecture: 'arm64' },
+      { model: 'iPhone 8 Plus', architecture: 'arm64' },
+      { model: 'iPhone X', architecture: 'arm64e' },
+      { model: 'iPhone XR', architecture: 'arm64e' },
+      { model: 'iPhone XS', architecture: 'arm64e' },
+      { model: 'iPhone XS Max', architecture: 'arm64e' },
+      { model: 'iPhone 11', architecture: 'arm64e' },
+      { model: 'iPhone 11 Pro', architecture: 'arm64e' },
+      { model: 'iPhone 11 Pro Max', architecture: 'arm64e' },
+      { model: 'iPhone 12 mini', architecture: 'arm64e' },
+      { model: 'iPhone 12', architecture: 'arm64e' },
+      { model: 'iPhone 12 Pro', architecture: 'arm64e' },
+      { model: 'iPhone 12 Pro Max', architecture: 'arm64e' },
+      { model: 'iPhone 13 mini', architecture: 'arm64e' },
+      { model: 'iPhone 13', architecture: 'arm64e' },
+      { model: 'iPhone 13 Pro', architecture: 'arm64e' },
+      { model: 'iPhone 13 Pro Max', architecture: 'arm64e' },
+      { model: 'iPhone 14', architecture: 'arm64e' },
+      { model: 'iPhone 14 Plus', architecture: 'arm64e' },
+      { model: 'iPhone 14 Pro', architecture: 'arm64e' },
+      { model: 'iPhone 14 Pro Max', architecture: 'arm64e' }
+    ];
 
-var pickerDevice = null;
+    const iosVersions = [
+      '14.0 Beta 1','14.0', '14.1', '14.2', '14.3', '14.4', '14.5','14.5.1','14.6', '14.7', '14.8','14.8.1', '15.0', '15.1', '15.2', '15.3', '15.4', '15.5', '15.6', '15.7', '15.8','15.8.1','15.8.2','15.8.3','16.0', '16.1', '16.2', '16.3', '16.4', '16.5', '16.6','16.7 RC', '16.7','16.7.10','17.0', '17.0.1'
+    ];
 
-function getIOSVersion() {
-  const userAgent = navigator.userAgent;
-  const match = userAgent.match(/OS (\d+_\d+)/);
-  return match ? match[1].replace('_', '.') : null;
-}
+    const versionSupport = {
+  '14.0 Beta 1': 'Unsupported😔',
+  '14.0': 'Supported!🎉',
+  '14.8.1': 'Supported!🎉',
+  '15.0': 'Supported!🎉',
+  '15.5 Beta 4': 'Supported!🎉',
+  '15.5': 'Supported!🎉',
+  '15.6 Beta 1': 'Supported!🎉',
+  '15.6 Beta 3': 'Supported!🎉',
+  '15.6.1': 'Supported!🎉',
+  '15.7': 'Supported!🎉',
+  '15.7.1': 'Supported!🎉',
+  '15.7.2': 'Supported!🎉',
+  '15.8.3': 'Supported!🎉',
+  '16.0 Beta 1': 'Supported!🎉',
+  '16.0 Beta 3': 'Supported!🎉',
+  '16.0 Beta 4': 'Supported!🎉',
+  '16.6.1': 'Supported!🎉',
+  '16.7 RC': 'Unsupported😔',
+  '16.7': 'Unsupported😔',
+  '16.7.10': 'Unsupported😔',
+  '17.0 Beta 1': 'Unsupported😔',
+  '17.0 Beta 4': 'Unsupported😔',
+  '17.0': 'Unsupported😔',
+  '17.0.1': 'Unsupported😔',
+  '17.0.2': 'Unsupported😔',
+  '14.1': 'Supported!🎉',
+  '14.2': 'Supported!🎉',
+  '14.3': 'Supported!🎉',
+  '14.4': 'Supported!🎉',
+  '14.5': 'Supported!🎉',
+  '14.5.1': 'Supported!🎉',
+  '14.6': 'Supported!🎉',
+  '14.7': 'Supported!🎉',
+  '14.8': 'Supported!🎉',
+  '15.1': 'Supported!🎉',
+  '15.2': 'Supported!🎉',
+  '15.3': 'Supported!🎉',
+  '15.4': 'Supported!🎉',
+  '15.6': 'Supported!🎉',
+  '15.8': 'Supported!🎉',
+  '16.0': 'Supported!🎉',
+  '16.1': 'Supported!🎉',
+  '16.2': 'Supported!🎉',
+  '16.3': 'Supported!🎉',
+  '16.4': 'Supported!🎉',
+  '16.5': 'Supported!🎉',
+  '16.6': 'Supported!🎉', 
+};
 
-function getTrollStoreSupport(version, architecture, versionType) {
-  if (!version) return 'Unsupported';
 
-  const architectureMap = {
-    'arm64': 'arm64 (A8)',
-    'arm64e': 'arm64e (A12-A17/M1-M2)',
-  };
+    let pickerDevice;
+    let pickerVersion;
 
-  const mappedArchitecture = architectureMap[architecture];
-  if (!mappedArchitecture) return 'Unsupported';
-
-  const compatibilityData = {
-    beta: {
-      'arm64 (A8)': [
-        { from: '14.0 beta 2', to: '14.8.1', tool: 'TrollInstallerX' }
-      ],
-      'arm64 (A9-A11)': [
-        { from: '14.0 beta 2', to: '17.0 beta 4', tool: 'TrollInstallerX' },
-        { from: '17.0 beta 5', to: '17.0', tool: 'TrollRestore' }
-      ],
-      'arm64e (A12-A17/M1-M2)': [
-        { from: '14.0 beta 2', to: '17.0 beta 4', tool: 'TrollHelperOTA' },
-        { from: '17.0 beta 5', to: '17.0', tool: 'TrollRestore' }
-      ]
-    },
-    release: {
-      'arm64 (A8)': [
-        { from: '14.8', to: '14.8.1', tool: 'TrollInstallerX' }
-      ],
-      'arm64 (A9-A11)': [
-        { from: '14.8', to: '17.0', tool: 'TrollInstallerX' },
-        { from: '17.0', to: '17.0', tool: 'TrollRestore' }
-      ],
-      'arm64e (A12-A17/M1-M2)': [
-        { from: '14.8', to: '17.0', tool: 'TrollHelperOTA' },
-        { from: '17.0', to: '17.0', tool: 'TrollRestore' }
-      ]
+    function setVersionType(type) {
+      selectedVersionType = type;
+      document.getElementById('releaseButton').classList.toggle('button-active', type === 'release');
+      document.getElementById('betaButton').classList.toggle('button-active', type === 'beta');
     }
-  };
 
-  const architectureData = compatibilityData[versionType][mappedArchitecture];
-  if (!architectureData) return 'Unsupported';
-
-  for (const range of architectureData) {
-    if (isVersionInRange(version, range.from, range.to)) {
-      return `Supported! Use ${range.tool} 🎉`;
-    }
-  }
-
-  return 'Unsupported😔';
-}
-
-function isVersionInRange(version, min, max) {
-  const versionParts = version.split('.').map(Number);
-  const minParts = min.split('.').map(Number);
-  const maxParts = max.split('.').map(Number);
-
-  for (let i = 0; i < 3; i++) {
-    const v = versionParts[i] || 0;
-    const minV = minParts[i] || 0;
-    const maxV = maxParts[i] || 0;
-
-    if (v < minV) return false;
-    if (v > maxV) return false;
-  }
-  return true;
-}
-
-function setVersionType(type) {
-  selectedVersionType = type;
-  document.getElementById('releaseButton').classList.toggle('button-active', type === 'release');
-  document.getElementById('betaButton').classList.toggle('button-active', type === 'beta');
-}
-
-function openPicker() {
-  if (pickerDevice) {
-    pickerDevice.open();
-    return;
-  }
-
-  pickerDevice = app.picker.create({
-    inputEl: '#chooseDevice',
-    cols: [
-      {
-        textAlign: 'center',
-        values: deviceList.map(device => device.model)
+    function openDevicePicker() {
+      if (pickerDevice) {
+        pickerDevice.open();
+        return;
       }
-    ],
-    on: {
-      change(picker, values) {
-        const device = deviceList.find(d => d.model === values[0]);
-        selectedDevice = device;
-        selectedArchitecture = device.architecture;
-        iosVersion = getIOSVersion(); // Ensure iosVersion is updated
 
-        // Update the displayed selected device
-        document.getElementById('chooseDevice').innerText = selectedDevice.model;
-        document.getElementById('ios-version').innerText = iosVersion; // Update displayed iOS version
+      pickerDevice = app.picker.create({
+        inputEl: '#chooseDevice',
+        cols: [
+          {
+            textAlign: 'center',
+            values: deviceList.map(device => device.model)
+          }
+        ],
+        on: {
+          change(picker, values) {
+            const device = deviceList.find(d => d.model === values[0]);
+            selectedDevice = device && device.model !== 'Choose Device' ? device : null;
+            selectedArchitecture = device ? device.architecture : 'arm64';
+
+            document.getElementById('chooseDevice').innerText = selectedDevice ? selectedDevice.model : 'Choose Device';
+          }
+        }
+      });
+      pickerDevice.open();
+    }
+
+    function openVersionPicker() {
+      if (pickerVersion) {
+        pickerVersion.open();
+        return;
+      }
+
+      pickerVersion = app.picker.create({
+        inputEl: '#chooseVersion',
+        cols: [
+          {
+            textAlign: 'center',
+            values: iosVersions.map(version => selectedVersionType === 'beta' ? `${version} Beta` : version)
+          }
+        ],
+        on: {
+          change(picker, values) {
+            iosVersion = values[0];
+            document.getElementById('chooseVersion').innerText = iosVersion;
+          }
+        }
+      });
+      pickerVersion.open();
+    }
+
+    function checkSupport() {
+      const supportInfoElement = document.getElementById('trollstore-support');
+
+      if (!selectedDevice || !iosVersion) {
+        app.dialog.alert('Please select a device and an iOS version!');
+        return;
+      }
+
+      const supportMessage = versionSupport[iosVersion] || 'Unknown Version';
+      const supportDetails = `Device Model: ${selectedDevice.model}<br>
+                              iOS Version: ${iosVersion}<br>
+                              Architecture: ${selectedArchitecture}`;
+      supportInfoElement.innerHTML = `${supportDetails}<br>
+                                      TrollStore Support: <span style="color: ${supportMessage.includes('Supported') ? 'green' : 'red'};">${supportMessage}</span>`;
+      supportInfoElement.style.color = supportMessage.includes('Supported') ? 'green' : 'red';
+
+      const cfwButton = document.getElementById('cfwButton');
+      if (supportMessage === 'Unsupported😔') {
+        cfwButton.style.display = 'none'; 
+      } else {
+        cfwButton.style.display = 'block';
       }
     }
-  });
+    function displayiOSVersion() {
+  const userAgent = navigator.userAgent || navigator.vendor || window.opera;
+  const iOSVersionElement = document.getElementById("ios-version");
 
-  pickerDevice.open();
-}
-
-function checkSupport() {
-  if (!selectedDevice || selectedDevice.model === 'Choose Device') {
-    app.dialog.alert('Please choose a device first.');
-    return;
+ 
+  if (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) {
+   
+    const match = userAgent.match(/OS (\d+_\d+(_\d+)?)/);
+    
+    if (match) {
+     
+      const iOSVersion = match[1].replace(/_/g, '.');
+      iOSVersionElement.textContent = `iOS version detected: iOS ${iOSVersion}`;
+    } else {
+      iOSVersionElement.textContent = "iOS version not detected.";
+    }
+  } else {
+    iOSVersionElement.textContent = "Not an iOS device";
   }
-
-  const supportMessage = getTrollStoreSupport(iosVersion, selectedArchitecture, selectedVersionType);
-  const supportInfoElement = document.getElementById('supportInfo');
-  const cfwButton = document.getElementById('cfwButton');
-  let color = supportMessage.includes('Unsupported') ? 'red' : 'green';
-
-  cfwButton.style.display = supportMessage.includes('Unsupported') ? 'inline-block' : 'none';
-  supportInfoElement.innerHTML = `<p>Architecture: ${selectedArchitecture}</p>
-                                  <p>iOS Version: ${iosVersion}</p>
-                                  <p style="color:${color};">TrollStore Support: ${supportMessage}</p>`;
 }
-
-function displayiOSVersion() {
-  document.getElementById('ios-version').innerText = iosVersion || 'Unknown';
-}
-
 displayiOSVersion();
-
   </script>
 </body>
 </html>
+<style>
+    :root{
+    --f7-list-inset-border-radius: 18px;--f7-block-strong-inset-border-radius:18px;--f7-block-inset-border-radius: 18px;} 
+</style>
