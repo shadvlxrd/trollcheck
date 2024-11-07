@@ -91,10 +91,25 @@ const deviceList = [
 const iosVersions = [
   '14.0 Beta 1', '14.0', '14.1', '14.2', '14.3', '14.4', '14.5', '14.5.1', '14.6', '14.7','14.7.1', '14.8', '14.8.1', 
   '15.0', '15.1', '15.2', '15.3', '15.4', '15.5', '15.6', '15.7','15.7.1', '15.7.2', '15.7.3','15.7.4','15.7.5','15.7.6','15.7.7','15.7.8','15.7.9', '15.8', '15.8.1', '15.8.2', '15.8.3', 
-  '16.0', '16.1', '16.2', '16.3', '16.4', '16.5', '16.6', '16.7 RC', '16.7', '16.7.10', '17.0', '17.0.1'
+  '16.0', '16.1', '16.2', '16.3', '16.4', '16.5', '16.6', '16.7 RC', '16.7', '16.7.10', '17.0', '17.0.1', '17.0.2', '17.0.3','17.1', '17.2','17.3','17.3.1','17.4','17.4.1','17.5','17.5.1','17.6','17.6.1','17.6.2','17.7','18.0','18.1'
 ];
 
 const versionSupport = {
+  '17.0.2': 'Unsupported😔',
+  '17.0.3': 'Unsupported😔',
+  '17.1': 'Unsupported😔', 
+  '17.2': 'Unsupported😔',
+  '17.3': 'Unsupported😔',
+  '17.4': 'Unsupported😔',
+  '17.4.1': 'Unsupported😔',
+  '17.5': 'Unsupported😔',
+  '17.5.1': 'Unsupported😔',
+  '17.6': 'Unsupported😔',
+  '17.6.1': 'Unsupported😔',
+  '17.6.2': 'Unsupported😔',
+  '17.7': 'Unsupported😔',
+  '18.0': 'Unsupported😔',
+  '18.1': 'Unsupported😔',
   '14.0 Beta 1': 'Unsupported😔',
   '14.0': 'Supported!🎉',
   '14.7.1': 'Supported!🎉',
@@ -150,16 +165,12 @@ const versionSupport = {
   '16.4': 'Supported!🎉',
   '16.5': 'Supported!🎉',
   '16.6': 'Supported!🎉', 
+  
 };
 
 let pickerDevice;
 let pickerVersion;
 
-function setVersionType(type) {
-  selectedVersionType = type;
-  document.getElementById('releaseButton').classList.toggle('button-active', type === 'release');
-  document.getElementById('betaButton').classList.toggle('button-active', type === 'beta');
-}
 
 function openDevicePicker() {
   if (pickerDevice) {
@@ -239,18 +250,23 @@ function getSupportedVersionRange(deviceModel) {
     case 'iPhone 13':
     case 'iPhone 13 Pro':
     case 'iPhone 13 Pro Max':
-      return ['15.0', '17.0.1'];
+      return ['15.0', '18.1'];
     case 'iPhone 14':
     case 'iPhone 14 Plus':
     case 'iPhone 14 Pro':
     case 'iPhone 14 Pro Max':
-      return ['16.0', '17.0.1'];
+      return ['16.0', '18.1'];
+      case 'iPhone 14':
+    case 'iPhone XR':
+    case 'iPhone XS':
+    case 'iPhone XS Max':
+    return['14.0','18.1']
     default:
-      return ['14.0', '17.0.1'];
+      return ['14.0', '18.1'];
       case 'iPhone SE(2nd generation)':
       return ['14.0', '17.0.1'];
       case 'iPhone SE(3rd generation)':
-      return ['15.4', '17.0.1'];
+      return ['15.4', '18.1'];
       
   }
 }
