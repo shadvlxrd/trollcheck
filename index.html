@@ -81,11 +81,32 @@ const deviceList = [
   { model: 'iPhone 13', architecture: 'arm64e' },
   { model: 'iPhone 13 Pro', architecture: 'arm64e' },
   { model: 'iPhone 13 Pro Max', architecture: 'arm64e' },
-  { model: 'iPhone SE(3rd generation)', archotercture: 'arm64e' }, 
+  { model: 'iPhone SE(3rd generation)', architecture: 'arm64e' }, 
   { model: 'iPhone 14', architecture: 'arm64e' },
   { model: 'iPhone 14 Plus', architecture: 'arm64e' },
   { model: 'iPhone 14 Pro', architecture: 'arm64e' },
-  { model: 'iPhone 14 Pro Max', architecture: 'arm64e' }
+  { model: 'iPhone 14 Pro Max', architecture: 'arm64e' },
+  { model: 'iPad Pro 12.9-inch (5th generation)', architecture: 'arm64e' },
+  { model: 'iPad Pro 11-inch (3rd generation)', architecture: 'arm64e' },
+  { model: 'iPad Pro 12.9-inch (4th generation)', architecture: 'arm64e' },
+  { model: 'iPad Pro 11-inch (2nd generation)', architecture: 'arm64e' },
+  { model: 'iPad Pro 12.9-inch (3rd generation)', architecture: 'arm64e' },
+  { model: 'iPad Pro 11-inch (1st generation)', architecture: 'arm64' },
+  { model: 'iPad Pro 12.9-inch (2nd generation)', architecture: 'arm64' },
+  { model: 'iPad Pro 12.9-inch (1st generation)', architecture: 'arm64' },
+  { model: 'iPad Pro 10.5-inch', architecture: 'arm64' },
+  { model: 'iPad Pro 9.7-inch', architecture: 'arm64' },
+  { model: 'iPad (9th generation)', architecture: 'arm64e' },
+  { model: 'iPad (8th generation)', architecture: 'arm64e' },
+  { model: 'iPad (7th generation)', architecture: 'arm64' },
+  { model: 'iPad (6th generation)', architecture: 'arm64' },
+  { model: 'iPad (5th generation)', architecture: 'arm64' },
+  { model: 'iPad mini (6th generation)', architecture: 'arm64e' },
+  { model: 'iPad mini (5th generation)', architecture: 'arm64' },
+  { model: 'iPad mini 4', architecture: 'arm64' },
+  { model: 'iPad Air (4th generation)', architecture: 'arm64e' },
+  { model: 'iPad Air (3rd generation)', architecture: 'arm64' },
+  { model: 'iPad Air 2', architecture: 'arm64' }
 ];
 
 const iosVersions = [
@@ -236,6 +257,7 @@ function openVersionPicker() {
 
 function getSupportedVersionRange(deviceModel) {
   switch(deviceModel) {
+    // iPhones
     case 'iPhone 6s':
     case 'iPhone 6s Plus':
     case 'iPhone 7':
@@ -246,6 +268,10 @@ function getSupportedVersionRange(deviceModel) {
     case 'iPhone 8 Plus':
     case 'iPhone X':
       return ['14.0', '16.7.10'];
+    case 'iPhone XR':
+    case 'iPhone XS':
+    case 'iPhone XS Max':
+      return ['14.0', '18.1'];
     case 'iPhone 13 mini':
     case 'iPhone 13':
     case 'iPhone 13 Pro':
@@ -256,20 +282,50 @@ function getSupportedVersionRange(deviceModel) {
     case 'iPhone 14 Pro':
     case 'iPhone 14 Pro Max':
       return ['16.0', '18.1'];
-      case 'iPhone 14':
-    case 'iPhone XR':
-    case 'iPhone XS':
-    case 'iPhone XS Max':
-    return['14.0','18.1']
-    default:
-      return ['14.0', '18.1'];
-      case 'iPhone SE(2nd generation)':
+    case 'iPhone SE(2nd generation)':
       return ['14.0', '17.0.1'];
-      case 'iPhone SE(3rd generation)':
+    case 'iPhone SE(3rd generation)':
       return ['15.4', '18.1'];
-      
+    case 'iPad Pro 12.9-inch (5th generation)':
+    case 'iPad Pro 11-inch (3rd generation)':
+      return ['15.0', '18.1'];
+    case 'iPad Pro 12.9-inch (4th generation)':
+    case 'iPad Pro 11-inch (2nd generation)':
+      return ['14.0', '18.1'];
+    case 'iPad Pro 12.9-inch (3rd generation)':
+    case 'iPad Pro 11-inch (1st generation)':
+      return ['14.0', '16.7.10'];
+    case 'iPad Pro 12.9-inch (2nd generation)':
+    case 'iPad Pro 10.5-inch':
+      return ['14.0', '15.8.3'];
+    case 'iPad Pro 12.9-inch (1st generation)':
+    case 'iPad Pro 9.7-inch':
+      return ['14.0', '14.8.1'];
+    case 'iPad (9th generation)':
+      return ['15.0', '18.1'];
+    case 'iPad (8th generation)':
+      return ['14.0', '17.0.1'];
+    case 'iPad (7th generation)':
+      return ['14.0', '16.7.10'];
+    case 'iPad (6th generation)':
+      return ['14.0', '15.7.8'];
+    case 'iPad (5th generation)':
+      return ['14.0', '14.8.1'];
+    case 'iPad mini (6th generation)':
+      return ['15.0', '18.1'];
+    case 'iPad mini (5th generation)':
+      return ['14.0', '15.7.8'];
+    case 'iPad mini 4':
+      return ['14.0', '14.8.1'];
+    case 'iPad Air (4th generation)':
+      return ['14.0', '17.0.1'];
+    case 'iPad Air (3rd generation)':
+      return ['14.0', '15.7.8'];
+    case 'iPad Air 2':
+      return ['14.0', '14.8.1']; 
   }
 }
+
 
 function checkSupport() {
   const supportInfoElement = document.getElementById('trollstore-support');
