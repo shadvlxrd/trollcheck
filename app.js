@@ -2,7 +2,7 @@ var app = new Framework7({
   el: "#app", 
 	theme: "ios",	
   name: 'TrollCheck',
-	id: 'com.Outlander.TrollCheck',
+	id: 'com.Shadow.TrollCheck',
 	serviceWorker: {
 		path: "./service-worker.js"
 	}
